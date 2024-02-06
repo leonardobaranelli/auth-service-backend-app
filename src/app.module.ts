@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { UsersModule } from './users/users.module';
+import { User } from "./users/entities/user.entity";
 
 @Module({
   imports: [
@@ -12,8 +14,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      models: [],
+      models: [User],
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,22 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Sequelize } from 'sequelize-typescript';
 
-describe('AppController', () => {
-  let appController: AppController;
+describe('AppService', () => {
+  let appService: AppService;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AppService,
+        {
+          provide: Sequelize,
+          useValue: new Sequelize({
+            dialect: 'mysql',
+          }),
+        },
+      ],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appService = module.get<AppService>(AppService);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
-    });
+  it('should be defined', () => {
+    expect(appService).toBeDefined();
+  });
+
+  it('should have a Sequelize instance', () => {
+    expect(appService['sequelize']).toBeInstanceOf(Sequelize);
   });
 });
