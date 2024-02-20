@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as swaggerUI from 'swagger-ui-express';
+import swaggerRouter from '../swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -8,11 +10,19 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('API Rest')
     .setDescription('CRUD server built self-taught.')
-    .setVersion('1.0')    
+    .setVersion('1.0')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('', app, document);
+  //const document = SwaggerModule.createDocument(app, config);
+  //app.use('', swaggerUI.serve, swaggerUI.setup(document));
+
+  app.use('/', swaggerRouter);
 
   await app.listen(3000);
 }
 bootstrap();
+
+
+
+
+
+
