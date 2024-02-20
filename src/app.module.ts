@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users.module';
-import { User } from "./users/entities/user.entity";
-
+import { UsersAPI } from "./users/entities/usersAPI.entity";
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
       host: process.env.DB_HOST,
@@ -13,7 +14,14 @@ import { User } from "./users/entities/user.entity";
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       port: 5432,
-      models: [User],
+      models: [UsersAPI],
+      dialectModule: require('pg'),
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      },
     }),
     UsersModule,
   ],
