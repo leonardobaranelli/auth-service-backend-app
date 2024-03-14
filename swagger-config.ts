@@ -3,8 +3,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
-    .setTitle('REST API')
-    .setDescription('CRUD server built self-taught')
+    .setTitle('Auth Service')
+    .setDescription('JWT based authentication server')
     .setVersion('1.0')
     .build();
 
