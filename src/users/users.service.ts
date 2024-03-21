@@ -3,6 +3,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { UsersAPI } from './entities/usersAPI.entity';
+//import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UsersService {
@@ -21,10 +24,21 @@ export class UsersService {
     });
   }
 
-  async create(createUserDto: CreateUserDto): Promise<UsersAPI> {
-    return this.usersAPIModel.create(createUserDto);
+  async findByUsername(email: string): Promise<UsersAPI | null> {
+    return this.usersAPIModel.findOne({
+      where: { email },
+    });
   }
 
+  async create(createUserDto: CreateUserDto): Promise<UsersAPI> {
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    if (!hashedPassword) {
+      throw new Error('Failed to hash password');
+    }
+    const newUserDto = { ...createUserDto, password: hashedPassword };
+    return this.usersAPIModel.create(newUserDto);
+  }
+  
   async remove(id: string): Promise<string> {
     const user = await this.findOne(id);
     await user.destroy();
